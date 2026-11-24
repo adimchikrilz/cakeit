@@ -79,7 +79,7 @@ export default function Admin() {
             <span><b>{t.name}</b> · {naira(t.tier === "15k" ? 15000 : 20000)}<br /><span className="small">{t.phone}</span></span>
             <span className={`chip ${t.status}`}>{t.status === "used" ? "Checked in" : "Approved"}</span>
           </div>
-          {t.status === "approved" && <button className="btn bad" onClick={() => act(t.token, "reject")}>Cancel ticket</button>}
+          <div className="actions"><button className="btn ghost" onClick={() => { navigator.clipboard?.writeText(`${location.origin}/t/${t.token}`); alert("Ticket link copied. Send it to the guest."); }}>Copy ticket link</button>{t.status === "approved" && <button className="btn bad" onClick={() => act(t.token, "reject")}>Cancel ticket</button>}</div>
         </div>
       ))}
 

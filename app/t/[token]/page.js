@@ -5,6 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import Nav from "@/components/Nav";
 import Spinner, { Loading } from "@/components/Spinner";
 import { EVENT } from "@/lib/config";
+import { save } from "@/lib/saved";
 
 const naira = n => "₦" + n.toLocaleString("en-NG");
 const LABEL = { held: "Awaiting payment", pending: "Pending approval", approved: "Approved", used: "Checked in", rejected: "Rejected", expired: "Expired" };
@@ -17,9 +18,10 @@ export default function Ticket() {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const load = () => fetch(`/api/tickets/${token}`, { cache: "no-store" })
-    .then(async r => setT(r.ok ? await r.json() : { status: "missing" })).catch(() => {});
+    .then(async r => { if (r.ok) { save(token); setT(await r.json()); } else setT({ status: "missing" }); }).catch(() => {});
   useEffect(() => {
     load();
     const a = setInterval(load, 8000), b = setInterval(() => setNow(Date.now()), 1000);
@@ -80,6 +82,10 @@ export default function Ticket() {
                 {t.status === "approved" && "You're in. Show this QR at the gate on the day."}
                 {t.status === "used" && "This ticket has been used."}
               </p>
+              <p style={{ textAlign: "center", marginTop: 14 }}>
+                <button className="btn ghost sm" onClick={() => { navigator.clipboard?.writeText(location.href); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 1800); }}>{linkCopied ? "Link copied" : "Copy ticket link"}</button>
+              </p>
+              <p className="small" style={{ textAlign: "center", marginTop: 8 }}>Saved on this device. Open the link on any phone to see your QR again.</p>
             </>}
 
             {t.status === "rejected" && <p>We couldn't confirm this payment, so the ticket was cancelled. Contact the host if you've paid, or <a href="/tickets">get a new ticket</a>.</p>}

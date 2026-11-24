@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Nav from "@/components/Nav";
 import Spinner, { Loading } from "@/components/Spinner";
 import { EVENT } from "@/lib/config";
+import { save } from "@/lib/saved";
 
 const naira = n => "₦" + n.toLocaleString("en-NG");
 
@@ -24,10 +25,11 @@ export default function Tickets() {
     const r = await fetch("/api/tickets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tier: sel, name, phone }) });
     const j = await r.json();
     if (!r.ok) { setBusy(false); setErr(j.error); load(); return; }
-    router.push("/t/" + j.token); // keep spinner while the next page opens
+    save(j.token);
+    router.push("/t/" + j.token);
   }
 
-  const chosen = tiers?.find(t => t.tier === sel);
+  const chosen = tiers?.find(t => t.tier === sel && !t.locked && t.left > 0);
   return (
     <>
       <Nav cta={false} />
@@ -39,14 +41,15 @@ export default function Tickets() {
         {tiers && !tiers.length && <p className="card err">We couldn't load tickets. Refresh the page to try again.</p>}
         <div className="tiers">
           {tiers?.map(t => (
-            <button key={t.tier} className="tier" data-c={t.tier} aria-pressed={sel === t.tier} disabled={t.left < 1} onClick={() => setSel(t.tier)}>
+            <button key={t.tier} className="tier" data-c={t.tier} aria-pressed={sel === t.tier} disabled={t.left < 1 || t.locked} onClick={() => setSel(t.tier)}>
               <p className="lab">{EVENT.tiers[t.tier].label}</p>
               <div className="row">
                 <span className="price">{naira(t.price)}</span>
-                <span className="left">{t.left < 1 ? "Sold out" : `${t.left}/${t.capacity} tickets left`}</span>
+                <span className="left">{t.locked ? "Locked" : t.left < 1 ? "Sold out" : `${t.left}/${t.capacity} tickets left`}</span>
               </div>
               <div className="dots" aria-hidden>{Array.from({ length: t.capacity }, (_, i) => <i key={i} className={i < t.capacity - t.left ? "on" : ""} />)}</div>
               {EVENT.tiers[t.tier].note && <p className="note">{EVENT.tiers[t.tier].note}</p>}
+              {t.locked && <p className="note">Opens once the {naira(tiers.find(x => x.tier === EVENT.unlockAfter[t.tier])?.price ?? 0)} tickets are sold out.</p>}
             </button>
           ))}
         </div>

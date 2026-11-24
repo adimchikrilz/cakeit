@@ -1,6 +1,7 @@
 import { db, releaseExpired } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
+// the long random token in the link is the ticket's secret
 export async function GET(_, { params }) {
   const { token } = await params;
   const d = await db();

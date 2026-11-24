@@ -73,7 +73,7 @@ h1{font-weight:800}h2{font-size:1.5rem;font-weight:700}
 .note{color:var(--mute);font-size:.92rem;margin-top:10px}
 form{display:grid;gap:12px;margin-top:22px}
 label{display:grid;gap:5px;font-weight:600;font-size:.95rem}
-input[type=text],input[type=tel],input[type=password]{font:inherit;padding:14px;border:2px solid var(--line);border-radius:12px;background:#fff}
+input[type=text],input[type=tel],input[type=password],input[type=email]{font:inherit;padding:14px;border:2px solid var(--line);border-radius:12px;background:#fff}
 input[type=file]{font:inherit;padding:12px;border:2px dashed var(--line);border-radius:12px;background:#fff;width:100%}
 .err{color:var(--bad);font-weight:600}
 .card{background:#fff;border:2px solid var(--line);border-radius:18px;padding:20px;margin-top:20px}
@@ -107,3 +107,10 @@ input[type=file]{font:inherit;padding:12px;border:2px dashed var(--line);border-
 .actions{display:flex;gap:10px}.actions .btn{flex:1}
 @media(min-width:640px){.item.has{grid-template-columns:1fr 240px}}
 @media(prefers-reduced-motion:no-preference){.tier{transition:box-shadow .15s,border-color .15s}.btn{transition:background .15s}}
+
+/* auth + nav */
+.navr{display:flex;align-items:center;gap:14px}
+.navlink{font:600 .95rem var(--body);color:var(--ink);background:none;border:0;cursor:pointer;text-decoration:none;padding:0}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:5px;margin-top:22px}
+.tabs button{font:700 .95rem var(--body);border:0;border-radius:10px;padding:10px;background:none;color:var(--ink);cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--ink);color:#fff}
