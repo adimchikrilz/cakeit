@@ -17,7 +17,7 @@ export default function Tickets() {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const load = () => fetch("/api/tickets", { cache: "no-store" }).then(r => r.json()).then(setTiers).catch(() => setTiers(p => p || []));
+  const load = () => fetch("/api/tickets", { cache: "no-store" }).then(r => r.json()).then(t => { setTiers(t); if (t.length === 1) setSel(t[0].tier); }).catch(() => setTiers(p => p || []));
   useEffect(() => { load(); const i = setInterval(load, 15000); return () => clearInterval(i); }, []);
 
   async function reserve(e) {
@@ -34,7 +34,7 @@ export default function Tickets() {
     <>
       <Nav cta={false} />
       <main className="wrap">
-        <h1 className="h-md">Choose your ticket</h1>
+        <h1 className="h-md">Get your ticket</h1>
         <p className="sub">{EVENT.date} · {EVENT.venue}</p>
 
         {tiers === null && <Loading />}

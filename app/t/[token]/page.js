@@ -63,7 +63,7 @@ export default function Ticket() {
           <div className="stub-b">
             {t.status === "held" && <>
               <div className="row"><h2>Pay {naira(t.price)}</h2><span className="timer">{mmss}</span></div>
-              <p className="small">Transfer the exact amount, then upload your screenshot.</p>
+              <p className="small">Transfer the exact amount, then upload your screenshot. The venue appears on your ticket once you've sent your payment.</p>
               <div className="acct">
                 <div><span className="small">{t.bank}</span><br /><b>{t.accountNumber}</b><br /><span className="small">{t.accountName}</span></div>
                 <button className="btn ghost sm" onClick={() => { navigator.clipboard?.writeText(t.accountNumber); setCopied(true); setTimeout(() => setCopied(false), 1500); }}>{copied ? "Copied" : "Copy"}</button>
@@ -76,6 +76,7 @@ export default function Ticket() {
             </>}
 
             {showQR && <>
+              {t.venue && <div className="venue"><span className="small">Venue</span><b>{t.venue}</b></div>}
               <div className={`qr ${t.status === "pending" ? "dim" : ""}`}><QRCodeSVG value={`${location.origin}/verify/${token}`} size={230} /></div>
               <p className="sub" style={{ textAlign: "center" }}>
                 {t.status === "pending" && "We're checking your payment. This page updates on its own once it's approved. Keep this page or screenshot it."}
